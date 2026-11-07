@@ -1,0 +1,28 @@
+name: Albay Trading Bot APK
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Zip'i ac
+        run: unzip -o -q albay-trading-bot-apk.zip -d src
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: APK derle
+        working-directory: src/albay-trading-bot
+        run: gradle assembleRelease --no-daemon
+      - name: APK adini duzenle
+        run: cp src/albay-trading-bot/app/build/outputs/apk/release/app-release.apk AlbayTradingBot.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: AlbayTradingBot
+          path: AlbayTradingBot.apk
